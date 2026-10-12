@@ -1,25 +1,18 @@
 
-def transfer_money(sender, receiver, amount):
+def transfer_money(sender, receiver, amount, simulate_failure=False):
     if sender["balance"]  < amount :
         raise ValueError("Insufficient balance")
     old_balance = sender["balance"]
+    if amount <= 0 :
+        raise ValueError("Amount should be greater than Zero")
+    if sender == receiver :
+        raise ValueError("Sender and Receiver cannot be the same account")
 
     try :
         sender["balance"] -= amount
-        raise RuntimeError( "Simulate crash")
+        if simulate_failure:
+            raise RuntimeError("Simulated crash")
         receiver["balance"] += amount
     except Exception:
         sender["balance"] = old_balance
         raise
-
-
-alice = {"balance": 1000}
-bob = {"balance":500}
-
-try :
-    transfer_money(alice, bob, 1700)
-except (ValueError, RuntimeError) as e :
-    print("Transfer failed:", e)
-
-print(alice)
-print(bob)
